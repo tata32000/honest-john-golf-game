@@ -64,11 +64,16 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
                   >
                     H{index + 1}
                     <br />
-                    <span className="text-green-600 text-xs">
+                    <span
+                      className={
+                        holes[index]?.isRandomPar
+                          ? "text-red-600 text-xs"
+                          : "text-green-600 text-xs"
+                      }
+                    >
                       (P: {holes[index]?.par}
                       {holes[index]?.isRandomPar ? "🎲" : ""})
                     </span>{" "}
-                    {/* Show dice emoji if randomized */}
                   </th>
                 ))}
                 <th className="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700">

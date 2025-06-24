@@ -125,10 +125,16 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                   >
                     H{index + 1}
                     <br />
-                    <span className="text-green-600 text-xs">
+                    <span
+                      className={
+                        hole.isRandomPar
+                          ? "text-red-600 text-xs"
+                          : "text-green-600 text-xs"
+                      }
+                    >
                       (P: {hole.par}
                       {hole.isRandomPar ? "🎲" : ""})
-                    </span>{" "}
+                    </span>
                     {/* Show dice emoji if randomized */}
                   </th>
                 ))}
