@@ -4,10 +4,9 @@ import {
   calculateOffset,
   calculateTotalScore,
   calculateTotalOffset,
-} from "../utils/gameCalculations.ts"; // Corrected import path with .ts extension
-import { NUM_HOLES } from "../utils/constants.ts"; // Corrected import path with .ts extension
-import type { Hole, Player } from "../utils/types.ts"; // Corrected import path with .ts extension
-// Corrected import path with .ts extension
+} from "../utils/gameCalculations.ts";
+import { NUM_HOLES } from "../utils/constants.ts";
+import type { Hole, Player } from "../utils/types.ts";
 
 // Define the type for the props of ResultsPhase component
 interface ResultsPhaseProps {
@@ -88,6 +87,17 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
                 >
                   <td className="py-3 px-4 border-b text-left font-medium text-gray-800 whitespace-nowrap">
                     {player.name}
+                    <br />
+                    <span
+                      className={`text-xs ${
+                        calculateTotalOffset(player, holes) > 0
+                          ? "text-red-600"
+                          : "text-blue-600"
+                      }`}
+                    >
+                      ({calculateOffset(calculateTotalOffset(player, holes), 0)}
+                      )
+                    </span>
                   </td>
                   {Array.from({ length: NUM_HOLES }).map((_, hIndex) => (
                     <td

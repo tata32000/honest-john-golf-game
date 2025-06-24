@@ -1,13 +1,13 @@
 import React from "react";
 import { Dices, ChevronRight } from "lucide-react";
-import { NUM_HOLES } from "../utils/constants.ts"; // Corrected import path with .ts extension
+import { NUM_HOLES } from "../utils/constants"; // Corrected import path (no .ts extension needed by bundler)
 import {
   calculateOffset,
   calculateTotalScore,
   calculateTotalOffset,
-} from "../utils/gameCalculations.ts"; // Corrected import path with .ts extension
-import type { Hole, Player } from "../utils/types.ts"; // Corrected import path with .ts extension
-// Corrected import path with .ts extension
+} from "../utils/gameCalculations"; // Corrected import path (no .ts extension needed by bundler)
+import type { Hole, Player } from "../utils/types"; // Corrected import path (no .ts extension needed by bundler)
+ // Corrected import path (no .ts extension needed by bundler)
 
 // Define the type for the props of RandomizeHolesPhase component
 interface RandomizeHolesPhaseProps {
@@ -147,6 +147,17 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                 >
                   <td className="py-3 px-4 border-b text-left font-medium text-gray-800 whitespace-nowrap">
                     {player.name}
+                    <br />
+                    <span
+                      className={`text-xs ${
+                        (calculateTotalOffset(player, holes)) > 0
+                          ? "text-red-600"
+                          : "text-blue-600"
+                      }`}
+                    >
+                      ({calculateOffset(calculateTotalOffset(player, holes), 0)}
+                      )
+                    </span>
                   </td>
                   {holes.map((hole, hIndex) => (
                     <td
