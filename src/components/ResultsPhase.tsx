@@ -86,7 +86,7 @@ const ResultsPhase: React.FC<ResultsPhaseProps> = ({
                   className="hover:bg-gray-50 transition duration-150"
                 >
                   <td className="py-3 px-4 border-b text-left font-medium text-gray-800 whitespace-nowrap">
-                    {player.name}
+                    {pIndex + 1}. {player.name}
                     <br />
                     <span
                       className={`text-xs ${

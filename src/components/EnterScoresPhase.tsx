@@ -95,7 +95,7 @@ const EnterScoresPhase: React.FC<EnterScoresPhaseProps> = ({
                   className="hover:bg-gray-50 transition duration-150"
                 >
                   <td className="py-3 px-4 border-b text-left font-medium text-gray-800 whitespace-nowrap">
-                    {player.name}
+                    {pIndex + 1}. {player.name}
                   </td>
                   <td className="py-2 px-1 border-b text-center text-sm">
                     <input
