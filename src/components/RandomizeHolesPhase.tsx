@@ -1,15 +1,14 @@
 import React from "react";
 import { Dices, ChevronRight } from "lucide-react";
-import { NUM_HOLES } from "../utils/constants"; // Corrected import path (no .ts extension needed by bundler)
+import { NUM_HOLES } from "../utils/constants";
 import {
   calculateOffset,
   calculateTotalScore,
   calculateTotalOffset,
-} from "../utils/gameCalculations"; // Corrected import path (no .ts extension needed by bundler)
-import type { Hole, Player } from "../utils/types"; // Corrected import path (no .ts extension needed by bundler)
- // Corrected import path (no .ts extension needed by bundler)
+} from "../utils/gameCalculations";
+import type { Hole, Player } from "../utils/types";
 
-// Define the type for the props of RandomizeHolesPhase component
+// Component for the hole randomization phase
 interface RandomizeHolesPhaseProps {
   numHolesToRandomize: number;
   setNumHolesToRandomize: React.Dispatch<React.SetStateAction<number>>;
@@ -20,7 +19,6 @@ interface RandomizeHolesPhaseProps {
   players: Player[];
 }
 
-// Component for the hole randomization phase
 const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
   numHolesToRandomize,
   setNumHolesToRandomize,
@@ -60,7 +58,7 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
               // Note: The logic to reset randomizedHoleIndices and holes.isRandomPar
               // when numHolesToRandomize decreases is handled in the parent App.tsx via useEffect.
             }}
-            className="w-20 p-2 border border-gray-300 rounded-lg text-lg text-center focus:ring-orange-500 focus:border-orange-500 transition duration-200 h-10"
+            className="w-20 p-2 border border-gray-300 rounded-md text-lg text-center focus:ring-orange-500 focus:border-orange-500 transition duration-200 h-10"
             min="0" // Minimum random holes is 0
             max={NUM_HOLES} // Maximum random holes is total number of holes
           />
@@ -116,6 +114,10 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                 <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">
                   Player
                 </th>
+                <th className="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700">
+                  Qualify Score
+                </th>{" "}
+                {/* Added Qualify Score header */}
                 {holes.map((hole, index) => (
                   <th
                     key={`random-header-hole-${index}`}
@@ -150,7 +152,7 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                     <br />
                     <span
                       className={`text-xs ${
-                        (calculateTotalOffset(player, holes)) > 0
+                        calculateTotalOffset(player, holes) > 0
                           ? "text-red-600"
                           : "text-blue-600"
                       }`}
@@ -158,6 +160,12 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                       ({calculateOffset(calculateTotalOffset(player, holes), 0)}
                       )
                     </span>
+                  </td>
+                  <td className="py-3 px-4 border-b text-center text-sm">
+                    <span className="font-semibold text-gray-700">
+                      {player.qualifyScore}
+                    </span>{" "}
+                    {/* Display Qualify Score */}
                   </td>
                   {holes.map((hole, hIndex) => (
                     <td

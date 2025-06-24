@@ -4,9 +4,9 @@ import {
   calculateOffset,
   calculateTotalScore,
   calculateTotalOffset,
-} from "../utils/gameCalculations.ts";
-import { NUM_HOLES } from "../utils/constants.ts";
-import type { Hole, Player } from "../utils/types.ts";
+} from "../utils/gameCalculations";
+import { NUM_HOLES } from "../utils/constants";
+import type { Hole, Player } from "../utils/types";
 
 // Define the type for the props of ResultsPhase component
 interface ResultsPhaseProps {

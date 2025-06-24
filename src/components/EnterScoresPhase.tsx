@@ -1,8 +1,7 @@
 import React from "react";
 import { Trophy, ChevronRight } from "lucide-react";
-import { NUM_HOLES } from "../utils/constants.ts"; // Corrected import path with .ts extension
-import type { Player, Hole } from "../utils/types.ts"; // Corrected import path with .ts extension
-// Corrected import path with .ts extension
+import { NUM_HOLES } from "../utils/constants";
+import type { Player, Hole } from "../utils/types";
 
 // Define the type for the props of EnterScoresPhase component
 interface EnterScoresPhaseProps {
@@ -10,8 +9,8 @@ interface EnterScoresPhaseProps {
   holes: Hole[];
   initialScoresGrid: number[][];
   setInitialScoresGrid: React.Dispatch<React.SetStateAction<number[][]>>;
-  // The type for handleSubmitAllInitialScores is a function that takes no arguments and returns nothing
   handleSubmitAllInitialScores: () => void;
+  setPlayers: React.Dispatch<React.SetStateAction<Player[]>>; // Add setPlayers to props
 }
 
 // Component for entering initial scores for all players and holes
@@ -21,6 +20,7 @@ const EnterScoresPhase: React.FC<EnterScoresPhaseProps> = ({
   initialScoresGrid,
   setInitialScoresGrid,
   handleSubmitAllInitialScores,
+  setPlayers, // Destructure setPlayers from props
 }) => {
   // Handles changes to individual score input fields in the grid
   const handleScoreInputChange = (
@@ -35,6 +35,21 @@ const EnterScoresPhase: React.FC<EnterScoresPhaseProps> = ({
       if (!newGrid[pIndex]) newGrid[pIndex] = Array(NUM_HOLES).fill(0);
       newGrid[pIndex][hIndex] = isNaN(score) || score <= 0 ? 0 : score; // Store positive number or 0
       return newGrid; // Return the updated grid
+    });
+  };
+
+  // Handles changes to the qualify score input field
+  const handleQualifyScoreChange = (pIndex: number, value: string): void => {
+    const score = parseInt(value);
+    setPlayers((prevPlayers) => {
+      const updatedPlayers = [...prevPlayers];
+      if (updatedPlayers[pIndex]) {
+        updatedPlayers[pIndex] = {
+          ...updatedPlayers[pIndex],
+          qualifyScore: isNaN(score) || score < 0 ? 0 : score, // Ensure score is non-negative
+        };
+      }
+      return updatedPlayers;
     });
   };
 
@@ -55,6 +70,10 @@ const EnterScoresPhase: React.FC<EnterScoresPhaseProps> = ({
                 <th className="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700">
                   Player
                 </th>
+                <th className="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Qualify Score
+                </th>{" "}
+                {/* New header for Qualify Score */}
                 {holes.map((hole, index) => (
                   <th
                     key={`header-hole-${index}`}
@@ -78,6 +97,18 @@ const EnterScoresPhase: React.FC<EnterScoresPhaseProps> = ({
                   <td className="py-3 px-4 border-b text-left font-medium text-gray-800 whitespace-nowrap">
                     {player.name}
                   </td>
+                  <td className="py-2 px-1 border-b text-center text-sm">
+                    <input
+                      type="number"
+                      value={player.qualifyScore || ""} // Display qualify score
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleQualifyScoreChange(pIndex, e.target.value)
+                      }
+                      className="w-20 p-2 border border-gray-300 rounded-md text-center text-sm focus:ring-purple-500 focus:border-purple-500 h-10"
+                      min="0" // Qualify score can be 0 or positive
+                    />
+                  </td>{" "}
+                  {/* New cell for Qualify Score input */}
                   {holes.map((_hole, hIndex) => (
                     <td
                       key={`player-${pIndex}-hole-${hIndex}-score-input`}

@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 
-// Import Components - Corrected paths by removing .tsx extension
 import SetParPhase from "./components/SetParPhase";
 import AddPlayersPhase from "./components/AddPlayersPhase";
 import EnterScoresPhase from "./components/EnterScoresPhase";
 import RandomizeHolesPhase from "./components/RandomizeHolesPhase";
 import ResultsPhase from "./components/ResultsPhase";
 
-// Import Utils - Corrected paths by removing .ts extension
 import {
   getDefaultPars,
   NUM_HOLES,
   DEFAULT_RANDOM_HOLES,
 } from "./utils/constants";
-import type { Hole, Player } from "./utils/types"; // Import types
-// Import types
+import type { Hole, Player } from "./utils/types";
 
 const App: React.FC = () => {
   // State to manage the current phase of the game
@@ -127,6 +124,7 @@ const App: React.FC = () => {
           name: newPlayerName.trim(),
           initialScores: newPlayerInitialScores,
           finalScores: [...newPlayerInitialScores], // Initially, final scores are same as initial scores
+          qualifyScore: 0, // Initialize new qualify score to 0
         },
       ]);
 
@@ -257,6 +255,7 @@ const App: React.FC = () => {
           initialScoresGrid={initialScoresGrid}
           setInitialScoresGrid={setInitialScoresGrid}
           handleSubmitAllInitialScores={handleSubmitAllInitialScores}
+          setPlayers={setPlayers} // Pass setPlayers to EnterScoresPhase for qualifyScore updates
         />
       )}
       {gamePhase === "randomizingHoles" && (

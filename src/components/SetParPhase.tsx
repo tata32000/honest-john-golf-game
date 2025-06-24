@@ -1,6 +1,6 @@
 import React from "react";
 import { Flag, ChevronRight } from "lucide-react";
-import { NUM_HOLES } from "../utils/constants"; // Corrected import path with .ts extension
+import { NUM_HOLES } from "../utils/constants";
 
 // Define the type for the props of SetParPhase component
 interface SetParPhaseProps {
