@@ -198,6 +198,35 @@ const App: React.FC = () => {
     }
   };
 
+  const setManualRandomizeHole = (holeIndex: number): void => {
+    // Convert the manual input to a number, defaulting to 0 if invalid
+    const parsedPar = parInputGrid[holeIndex] || 0;
+
+    // Update the specific hole's par value and mark it as a random par hole
+    setHoles((prevHoles) => {
+      const updatedHoles = [...prevHoles];
+      updatedHoles[holeIndex] = {
+        ...updatedHoles[holeIndex],
+        par: parsedPar,
+        isRandomPar: true, // Mark this hole as a random par hole
+      };
+      return updatedHoles;
+    });
+
+    // Add this hole index to the set of randomized holes
+    setRandomizedHoleIndices((prevIndices) => {
+      const newIndices = new Set(prevIndices);
+      newIndices.add(holeIndex);
+      return newIndices;
+    });
+
+    console.log(
+      `Hole ${
+        holeIndex + 1
+      } manually set to par ${parsedPar} and marked as random.`
+    );
+  };
+
   // Function to transition to the final results phase
   const handleViewFinalResults = (): void => {
     // Ensure final scores are calculated one last time before displaying results
@@ -264,6 +293,7 @@ const App: React.FC = () => {
           setNumHolesToRandomize={setNumHolesToRandomize}
           randomizedHoleIndices={randomizedHoleIndices}
           handleRandomizeOneHole={handleRandomizeOneHole}
+          setManualRandomizeHole={setManualRandomizeHole}
           handleViewFinalResults={handleViewFinalResults}
           holes={holes}
           players={players}

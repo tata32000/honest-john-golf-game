@@ -1,5 +1,5 @@
-import React from "react";
-import { Dices, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+import { Dices, ChevronRight, Edit } from "lucide-react";
 import { NUM_HOLES } from "../utils/constants";
 import {
   calculateOffset,
@@ -8,12 +8,12 @@ import {
 } from "../utils/gameCalculations";
 import type { Hole, Player } from "../utils/types";
 
-// Component for the hole randomization phase
 interface RandomizeHolesPhaseProps {
   numHolesToRandomize: number;
   setNumHolesToRandomize: React.Dispatch<React.SetStateAction<number>>;
   randomizedHoleIndices: Set<number>;
   handleRandomizeOneHole: () => void;
+  setManualRandomizeHole: (holeIndex: number) => void;
   handleViewFinalResults: () => void;
   holes: Hole[];
   players: Player[];
@@ -24,10 +24,49 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
   setNumHolesToRandomize,
   randomizedHoleIndices,
   handleRandomizeOneHole,
+  setManualRandomizeHole,
   handleViewFinalResults,
   holes,
   players,
 }) => {
+  const [manualHoleInput, setManualHoleInput] = useState<string>(""); // State for manual hole input
+  const [manualRandomizeMessage, setManualRandomizeMessage] =
+    useState<string>(""); // Feedback message
+
+  // Handler for manually randomizing a specific hole
+  const handleManualRandomizeHole = (): void => {
+    const holeNumber = parseInt(manualHoleInput);
+
+    // Validate input
+    if (isNaN(holeNumber) || holeNumber < 1 || holeNumber > NUM_HOLES) {
+      setManualRandomizeMessage(
+        "Please enter a valid hole number between 1 and " + NUM_HOLES + "."
+      );
+      return;
+    }
+
+    const holeIndex = holeNumber - 1; // Convert to 0-based index
+
+    if (randomizedHoleIndices.has(holeIndex)) {
+      setManualRandomizeMessage(
+        "Hole " + holeNumber + " is already randomized!"
+      );
+      return;
+    }
+
+    if (randomizedHoleIndices.size >= numHolesToRandomize) {
+      setManualRandomizeMessage(
+        "You have already randomized the set number of holes."
+      );
+      return;
+    }
+
+    setManualRandomizeHole(holeIndex);
+
+    setManualRandomizeMessage("Hole " + holeNumber + " manually selected.");
+    setManualHoleInput(""); // Clear input
+  };
+
   return (
     <div className="flex flex-col items-center p-4 min-h-screen bg-gradient-to-br from-yellow-300 to-orange-400 font-inter text-gray-800">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-6xl md:max-w-4xl lg:max-w-6xl text-center mb-8">
@@ -55,14 +94,45 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
               setNumHolesToRandomize(
                 isNaN(val) || val < 0 || val > NUM_HOLES ? 0 : val
               );
-              // Note: The logic to reset randomizedHoleIndices and holes.isRandomPar
-              // when numHolesToRandomize decreases is handled in the parent App.tsx via useEffect.
             }}
             className="w-20 p-2 border border-gray-300 rounded-md text-lg text-center focus:ring-orange-500 focus:border-orange-500 transition duration-200 h-10"
             min="0" // Minimum random holes is 0
             max={NUM_HOLES} // Maximum random holes is total number of holes
           />
         </div>
+
+        {/* Section for Manual Hole Randomization */}
+        <div className="mt-6 p-4 border border-blue-300 rounded-lg bg-blue-50">
+          <h3 className="text-xl font-bold text-blue-700 mb-3 flex items-center justify-center">
+            <Edit className="mr-2 w-6 h-6" /> Manually Select a Hole
+          </h3>
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3">
+            <input
+              type="number"
+              value={manualHoleInput}
+              onChange={(e) => {
+                setManualHoleInput(e.target.value);
+                setManualRandomizeMessage(""); // Clear message on input change
+              }}
+              placeholder="Hole Number (1-18)"
+              className="w-40 p-2 border border-blue-300 rounded-md text-center text-base focus:ring-blue-500 focus:border-blue-500 h-10"
+              min="1"
+              max={NUM_HOLES}
+            />
+            <button
+              onClick={handleManualRandomizeHole}
+              className="py-2 px-6 rounded-lg text-lg font-semibold shadow-md transition duration-300 ease-in-out transform bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 min-h-[44px]"
+            >
+              Manual Randomize
+            </button>
+          </div>
+          {manualRandomizeMessage && (
+            <p className="mt-2 text-sm text-red-500 font-medium">
+              {manualRandomizeMessage}
+            </p>
+          )}
+        </div>
+        {/* End Manual Hole Randomization Section */}
 
         <button
           onClick={handleRandomizeOneHole} // Call handler to randomize one hole
@@ -71,7 +141,7 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
             randomizedHoleIndices.size >= numHolesToRandomize ||
             randomizedHoleIndices.size === NUM_HOLES
           }
-          className={`py-3 px-6 rounded-lg text-xl font-semibold shadow-lg transition duration-300 ease-in-out transform ${
+          className={`mt-6 py-3 px-6 rounded-lg text-xl font-semibold shadow-lg transition duration-300 ease-in-out transform ${
             randomizedHoleIndices.size >= numHolesToRandomize ||
             randomizedHoleIndices.size === NUM_HOLES
               ? "bg-gray-400 text-gray-600 cursor-not-allowed" // Disabled style
@@ -135,7 +205,6 @@ const RandomizeHolesPhase: React.FC<RandomizeHolesPhaseProps> = ({
                       (P: {hole.par}
                       {hole.isRandomPar ? "🎲" : ""})
                     </span>
-                    {/* Show dice emoji if randomized */}
                   </th>
                 ))}
                 <th className="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700">
